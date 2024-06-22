@@ -6,6 +6,9 @@ select * from participe;
 select * from rol;
 select * from formato;
 select * from pais;
+select * from idioma;
+select * from usuario;
+select * from tipo_de_relacion;
 
 show create table genero;
 
@@ -59,4 +62,41 @@ select * from tematica;
 INSERT INTO tematica (id_tematica, descripcion) 
 VALUES (1, 'Tecnología'), (2, 'Deportes'), (3, 'Música'), (4, 'Cine'),(5, 'Literatura'),(6, 'Viajes'),(7, 'Gastronomía'),(8, 'Moda'),(9, 'Salud'),(10, 'Fitness'),(11, 'Educación'),
 (12, 'Política'),(13, 'Finanzas'),(14, 'Ciencia'),(15, 'Arte'),(16, 'Fotografía'),(17, 'Historia'),(18, 'Animales'),(19, 'Videojuegos'),(20, 'Medio Ambiente');
+
+select * from formato;
+
+INSERT INTO formato (id_formato,descripcion) VALUES 
+(1,'Cancion'),(2,'Película'),(3,'Streaming'),(4,'Blog'),(5,'Juego'),(6,'Libro'),(7,'Serie'),(8,'Podcast'),(9,'Revista'),(10,'Periódico'),(11,'Documentale'),(12,'Video Musical'),
+(13,'Entrevista'),(14,'Obra de Teatro'),(15,'Exposicion'),(16,'Videojuego'),(17,'Webinar'),(18,'Tutorial'),(19,'Educación Online'),(20,'Infografía'),(21,'Fotografía'),
+(22,'Comic'),(23,'Manga'),(24,'Manual'),(25,'Noticiero'),(26,'Reality Shows'),(27,'Deporte en Vivo'),(28,'Programa de TV'),(29,'Evento en Vivo'),(30,'Conferencia'),
+(31,'Seminario'),(32,'Concursos'),(33,'Publicaciones Académicas');
+
+select * from usuario;
+select * from pais;
+
+INSERT INTO usuario (id_usuario, email, contraseña, sexo, fecha_nacimiento, fk_id_pais_origen, fk_id_pais_reside) 
+VALUES
+(1, 'user1@example.com', 'password1', 'Masculino', '1990-01-01', 1, 1),
+(2, 'user2@example.com', 'password2', 'Femenino', '1985-05-15', 2, 5),
+(3, 'user3@example.com', 'password3', 'Masculino', '1992-07-22', 3, 6),
+(4, 'user4@example.com', 'password4', 'Femenino', '1988-12-30', 4, 7),
+(5, 'user5@example.com', 'password5', 'Masculino', '1995-09-09', 5, 8),
+(6, 'user6@example.com', 'password6', 'Femenino', '1993-03-03', 6, 9),
+(7, 'user7@example.com', 'password7', 'Masculino', '1987-11-11', 7, 10),
+(8, 'user8@example.com', 'password8', 'Femenino', '1991-06-17', 8, 11),
+(9, 'user9@example.com', 'password9', 'Masculino', '1989-08-24', 9, 12),
+(10, 'user10@example.com', 'password10', 'Femenino', '1994-04-04', 10, 13),
+(11, 'user11@example.com', 'password11', 'Masculino', '1996-02-28', 11, 14),
+(12, 'user12@example.com', 'password12', 'Femenino', '1998-10-10', 12, 15);
+
+
+select * from conversacion;
+
+select * from recomendacion;
+
+INSERT INTO conversacion (nro_conversacion, fk_id_usuario, fecha) 
+VALUES
+(1, 1, '2023-01-01'),(2, 1, '2023-02-15'),(3, 1, '2023-03-10'),(4, 1, '2023-04-20'),(5, 1, '2023-05-05'),
+(1, 2, '2023-06-30'),(2, 2, '2023-07-15'),(3, 2, '2023-08-25'),(4, 2, '2023-09-10'),(5, 2, '2023-10-20');
+
 
