@@ -18,6 +18,9 @@ descripcion varchar(25) not null,
 constraint pk_tematica primary key (id_tematica)
 );
 
+ALTER TABLE genero AUTO_INCREMENT = 0;
+ALTER TABLE genero ALTER COLUMN id_genero SET DEFAULT 0;
+
 create table genero(
 id_genero int, -- auto_increment
 descripcion varchar(25) not null,
@@ -66,8 +69,6 @@ descripcion varchar(25) not null,
 constraint pk_unidad_de_medida primary key (id_unidad_de_medida)
 );
 
-show create table unidad_de_medida;
-show create table usuario;
 
 create table usuario(
 id_usuario int, -- auto_increment
@@ -82,29 +83,12 @@ constraint fk_pais_origen foreign key (fk_id_pais_origen) references pais(id_pai
 constraint fk_pais_reside foreign key (fk_id_pais_reside) references pais(id_pais)
 );
 
-show create table usuario;
-
 create table conversacion(
 nro_conversacion int, -- auto_increment
 fk_id_usuario int,
 fecha date not null, -- YY:MM:DD
 constraint pk_conversacion primary key (nro_conversacion, fk_id_usuario),
 constraint fk_conversacion_usuario foreign key (fk_id_usuario) references usuario(id_usuario)
-);
-
-drop table conversacion_emocion;
-
-show create table conversacion;
-
-show create table conversacion_emocion;
-
-create table conversacion_emocion(
-fk_nro_conversacion int not null,
-fk_id_usuario int not null,
-fk_id_emocion int not null,
-constraint pk_conversacion_emocion primary key (fk_nro_conversacion, fk_id_usuario, fk_id_emocion),
-constraint fk_conversacion_emocion_conversacion_usuario foreign key (fk_nro_conversacion, fk_id_usuario) references conversacion(nro_conversacion,fk_id_usuario),
-constraint fk_conversacion_emocion_emocion foreign key (fk_id_emocion) references emocion(id_emocion)
 );
 
 create table conversacion_emocion(
@@ -162,6 +146,30 @@ tiempo_consumido int,
 constraint pk_contenido primary key (id_contenido)
 );
 
+create table contenido_genero(
+fk_id_contenido int references contenido(id_contenido),
+fk_id_genero int references genero(id_genero),
+constraint pk_contenido_genero primary key (fk_id_contenido,fk_id_genero)
+);
+
+create table contenido_caracteristica(
+fk_id_contenido int references contenido(id_contenido),
+fk_id_caracteristica int references caracteristica(id_caracteristica),
+constraint pk_contenido_caracteristica primary key (fk_id_contenido,fk_id_caracteristica)
+);
+
+create table contenido_tematica(
+fk_id_contenido int references contenido(id_contenido),
+fk_id_tematica int references tematica(id_tematica),
+constraint pk_contenido_tematica primary key (fk_id_contenido,fk_id_tematica)
+);
+
+create table contenido_emocion(
+fk_id_contenido int references contenido(id_contenido),
+fk_id_emocion int references emocion(id_emocion),
+constraint pk_contenido_emocion primary key (fk_id_contenido,fk_id_emocion)
+);
+
 create table recomendacion(
 id_recomendacion int, -- auto_increment
 opinion varchar(100),
@@ -179,5 +187,55 @@ fk_nro_conversacion int not null,
 constraint pk_recomendacion primary key (id_recomendacion),
 constraint fk_recomendacion_conversacion_usuario foreign key (fk_nro_conversacion, fk_id_usuario) references conversacion(nro_conversacion, fk_id_usuario)
 );
+
+create table esta_basado(
+fk_id_contenido_1 int not null references contenido(id_contenido),
+fk_id_contenido_2 int not null references contenido(id_contenido),
+fk_id_tipo_de_relacion int not null references tipo_de_relacion(id_tipo_de_relacion),
+constraint pk_esta_basado primary key (fk_id_contenido_1, fk_id_contenido_2)
+);
+
+create table participa(
+fk_id_participe int not null references participe(id_participe),
+fk_id_rol int not null references rol(id_rol),
+fk_id_contenido int not null references contenido(id_contenido),
+constraint pk_participa primary key (fk_id_participe,fk_id_rol,fk_id_contenido)
+);
+
+create table preferencia (
+id_preferencia int not null, -- auto_increment
+fk_id_usuario int not null references usuario(id_usuario), 
+descripcion varchar(25) not null,
+fk_id_caracteristica int not null references caracteristica(id_caracteristica),
+constraint pk_preferencia primary key (id_preferencia, fk_id_usuario)
+);
+
+create table usuario_idioma(
+fk_id_idioma int not null references idioma(id_idioma),
+fk_id_usuario int not null references usuario(id_usuario),
+constraint pk_usuario_idioma primary key (fk_id_idioma, fk_id_usuario)
+);
+
+
+create table idioma_contenido(
+fk_id_idioma int not null,
+fk_id_contenido int not null,
+constraint pk_idioma_contenido primary key (fk_id_idioma, fk_id_contenido),
+constraint fk_idioma_contenido_idioma foreign key (fk_id_idioma) references idioma(id_idioma),
+constraint fk_idioma_contenido_contenido foreign key (fk_id_contenido) references contenido(id_contenido)
+);
+
+create table feedback(
+fk_id_contenido int not null,
+fk_id_emocion int not null,
+fk_id_caracteristica int not null,
+ponderacion int,
+constraint pk_feedback primary key (fk_id_contenido,fk_id_emocion,fk_id_caracteristica),
+constraint fk_feedback_id_contenido foreign key (fk_id_contenido) references contenido (id_contenido),
+constraint fk_feedback_id_emocion foreign key (fk_id_emocion) references emocion(id_emocion),
+constraint fk_feedback_id_caracteristica foreign key (fk_id_caracteristica) references caracteristica(id_caracteristica)
+);
+
+
 
 
