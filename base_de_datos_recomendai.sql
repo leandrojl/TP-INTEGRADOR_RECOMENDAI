@@ -158,6 +158,9 @@ fk_id_caracteristica int references caracteristica(id_caracteristica),
 constraint pk_contenido_caracteristica primary key (fk_id_contenido,fk_id_caracteristica)
 );
 
+show create table contenido_tematica;
+show create table usuario;
+
 create table contenido_tematica(
 fk_id_contenido int references contenido(id_contenido),
 fk_id_tematica int references tematica(id_tematica),
@@ -170,12 +173,14 @@ fk_id_emocion int references emocion(id_emocion),
 constraint pk_contenido_emocion primary key (fk_id_contenido,fk_id_emocion)
 );
 
+show create table recomendacion;
+
 create table recomendacion(
 id_recomendacion int, -- auto_increment
 opinion varchar(100),
-consumio boolean not null,
-interes boolean not null,
-puntaje int not null,
+consumio int,
+interes int,
+puntaje int,
 comentario varchar(50),
 fk_id_contenido int references contenido(id_contenido),
 fk_id_tematica int references tematica(id_tematica),
