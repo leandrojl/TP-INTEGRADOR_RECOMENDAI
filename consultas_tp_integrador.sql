@@ -132,7 +132,7 @@ create or replace view Estadistica_sobre_usuarios as
 	 left join tematica t on r.fk_id_tematica = t.id_tematica
 	 left join emocion e on r.fk_id_emocion = e.id_emocion
  group by 
-	u.id_usuario, u.email,u.sexo, p.descripcion;
+	u.id_usuario, u.email,u.sexo, p.descripcion,p1.descripcion;
  
    
 -- vii) Generar una vista de la ficha técnica de un contenido cualquiera.
@@ -166,7 +166,13 @@ from
     join caracteristica carac on carac.id_caracteristica = cc.fk_id_caracteristica
 where c.id_contenido in (1)
 group by 
-    c.id_contenido;
+    c.id_contenido,
+    c.titulo,
+    f.descripcion,
+    c.tiempo_consumido,
+    edm.descripcion,
+    c.año_publicacion,
+    p.descripcion;
     
    
     
