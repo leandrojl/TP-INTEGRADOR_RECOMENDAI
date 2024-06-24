@@ -4,7 +4,7 @@ select
 	  c.titulo, avg(r.puntaje) as prom
 from 
 	  recomendacion r
-join contenido c on c.id_contenido = r.fk_id_contenido
+	  join contenido c on c.id_contenido = r.fk_id_contenido
 group by 
 	  c.id_contenido, c.titulo
 having avg(r.puntaje)>=5
@@ -20,21 +20,22 @@ select
 	coalesce(avg(rec.puntaje),"sin puntuar") as PuntajePromedio 
 from 
 	formato form
-left join contenido cont on cont.fk_id_formato = form.id_formato
-left join recomendacion rec on cont.id_contenido = rec.fk_id_contenido
+	left join contenido cont on cont.fk_id_formato = form.id_formato
+	left join recomendacion rec on cont.id_contenido = rec.fk_id_contenido
 group by 
 	form.descripcion;
 
 
 -- iii)  Armar una playlist de recomendadas con canciones emocionantes para cuando estás aburrido.
 
+-- esta consulta nos trae todas las canciones emocionantes para cuando estas aburrido en base a la recomendacion de una conversacion y usuario especifico
 select 
 	c.id_contenido, c.titulo
 from 
 	recomendacion r 
-join contenido c on r.fk_id_contenido = c.id_contenido
-join contenido_emocion ce on c.id_contenido =  ce.fk_id_contenido
-join contenido_caracteristica cc on c.id_contenido = cc.fk_id_contenido
+	join contenido c on r.fk_id_contenido = c.id_contenido
+	join contenido_emocion ce on c.id_contenido =  ce.fk_id_contenido
+	join contenido_caracteristica cc on c.id_contenido = cc.fk_id_contenido
 where 
 	r.fk_id_usuario= 2
 	and r.fk_nro_conversacion = 1
@@ -47,8 +48,8 @@ select
 	c.id_contenido, c.titulo
 from 
 	contenido c
-join contenido_emocion ce on c.id_contenido =  ce.fk_id_contenido
-join contenido_caracteristica cc on c.id_contenido = cc.fk_id_contenido
+	join contenido_emocion ce on c.id_contenido =  ce.fk_id_contenido
+	join contenido_caracteristica cc on c.id_contenido = cc.fk_id_contenido
 where 
 	c.fk_id_formato = 1 
 	and ce.fk_id_emocion = 11 
@@ -61,8 +62,8 @@ select
 	distinct c.id_contenido, c.titulo
 from 
 	contenido c
-join contenido_caracteristica cc on c.id_contenido = cc.fk_id_contenido
-join esta_basado eb on c.id_contenido = eb.fk_id_contenido_1 or c.id_contenido = eb.fk_id_contenido_2
+	join contenido_caracteristica cc on c.id_contenido = cc.fk_id_contenido
+	join esta_basado eb on c.id_contenido = eb.fk_id_contenido_1 or c.id_contenido = eb.fk_id_contenido_2
 where 
 	cc.fk_id_caracteristica = 11 
 	and (
@@ -80,19 +81,60 @@ from
 	participe p
 where not exists
 	(select 1
-	from formato f
+		from formato f
 	where not exists
 		(select 1
-		from contenido c
-		join participa pa on p.id_participe = pa.fk_id_participe
+			from contenido c
+			join participa pa on p.id_participe = pa.fk_id_participe
 		where c.fk_id_formato = f.id_formato
-		and c.id_contenido = pa.fk_id_contenido
+			and c.id_contenido = pa.fk_id_contenido
 		)
 		);
         
         
 -- vi) Elaborar una consulta interesante para este modelo. Enunciarla en lenguaje natural y en sql.
 
+/*En esta consulta SQL queremos demostrar con una vista como es
+  que una IA a traves de las interacciones que tenemos con ella 
+  puede almacenar, analizar y estudiar informacion espeficica de 
+  cada usuario pudiendo asi establecer patrones de conducta a traves 
+  de la informacion recolectada sobre las personas que participan.
+  La consulta utiliza funciones de agregacion para contabilizar
+  las columnas especificadas y asi obtener un valor correspondiente
+  a como el usuario interactuo y en base a los parametros elegidos
+  */
+  
+select * from estadistica_sobre_usuarios;
+
+create or replace view Estadistica_sobre_usuarios as
+ select 
+	 u.id_usuario,
+	 u.email,
+     u.sexo,
+     p.descripcion as Pais_Origen,
+     p1.descripcion as Pais_Residencia,
+	 count(*)as Recomendaciones_hechas,
+	 count(r.interes) as Interes_en_Recomendaciones,
+	 count(r.consumio) as Consumicion_de_Recomendaciones,
+	 (count(r.interes)*100/count(*)) as Porcentaje_de_Interes_en_Recomendacion,
+	 (count(r.interes)*100/count(*)) as Porcentaje_Recomendaciones_Consumidas,
+     (sum(r.puntaje)/count(*)) as Puntaje_Promedio,
+	 GROUP_CONCAT(distinct g.descripcion separator ', ') as Generos_Buscados,
+	 GROUP_CONCAT(distinct c.descripcion separator ', ') as Caracteristicas_Buscadas,
+	 GROUP_CONCAT(distinct t.descripcion separator ', ') as Tematicas_Buscadas
+ from 
+	 usuario u
+	 join recomendacion r on u.id_usuario = r.fk_id_usuario
+     join pais p on u.fk_id_pais_origen = p.id_pais
+     join pais p1 on u.fk_id_pais_reside = p1.id_pais
+	 left join genero g on r.fk_id_genero = g.id_genero
+	 left join caracteristica c on r.fk_id_genero = c.id_caracteristica
+	 left join tematica t on r.fk_id_tematica = t.id_tematica
+	 left join emocion e on r.fk_id_emocion = e.id_emocion
+ group by 
+	u.id_usuario, u.email,u.sexo, p.descripcion;
+ 
+   
 -- vii) Generar una vista de la ficha técnica de un contenido cualquiera.
 
 select * from ficha_tecnica;
@@ -105,8 +147,8 @@ select
     edm.descripcion as Unidad_de_Medida,
     c.año_publicacion as Año_Publicacion,
     p.descripcion as Pais_Origen,
-    GROUP_CONCAT(distinct g.descripcion separator ', ') as Generos, -- esta funcion me permite concatenar los generos pertenecientes a X pelicula y el separator es una funcion para establecer como se separa el contenido
-	GROUP_CONCAT(distinct pe.descripcion separator ', ') as Participes,
+    GROUP_CONCAT(distinct g.descripcion separator ', ') as Generos, 
+    GROUP_CONCAT(distinct pe.descripcion separator ', ') as Participes,
     GROUP_CONCAT(distinct t.descripcion separator ', ') as Tematicas,
     GROUP_CONCAT(distinct carac.descripcion separator ', ') as Caracteristicas
 from
